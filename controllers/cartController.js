@@ -7,6 +7,7 @@ import Product from "../models/productModel.js"
 //add to cart
 export const addToCart = async (req, res) => {
     try {
+        //id of the product
         const { id } = req.params
         const { quantity } = req.body
 
@@ -19,10 +20,17 @@ export const addToCart = async (req, res) => {
             return res.status(400).json({ message: 'Product out of stock', success: false })
         }
 
-        const user = await findUser()
+        let user = ''
+        try {
+            //find user
+            user = await findUser(req)
+        } catch (error) {
+            console.log("Error in finding user", error)
+            res.status(404).json({ message: "Error in finding user", success: false })
+        }
 
         //Adding product to cart
-        if (user) {
+        if (user.role === 'user') {
             const addToCart = new Cart({
                 quantity,
                 product: id,
@@ -31,8 +39,8 @@ export const addToCart = async (req, res) => {
 
             const newCart = await addToCart.save()
             if (!newCart) return res.status(400).json({ message: 'Product not added to cart', success: false })
-        }else{
-            return res.status(400).json({ message: 'User not found', success: false })
+        } else {
+            return res.status(400).json({ message: 'User not authenticated', success: false })
         }
 
         res.status(200).json({ message: 'Product added to cart', success: true })
@@ -69,14 +77,20 @@ export const editCart = async (req, res) => {
 //show cart
 export const showCart = async (req, res) => {
     try {
-        
-        
-        const user = await findUser()
-        if (user === false) return res.status(400).json({ message: 'User not found', success: false })
 
-        const cart = await Cart.find({ buyer : user._id })
-        if (!cart) return res.status(400).json({ message: 'Cart is empty', success: false })
+        let user = ''
+        try {
+            user = await findUser(req)
+        } catch (error) {
+            console.log("Error in finding user", error)
+            res.status(404).json({ message: "Error in finding user", success: false })
+        }
         
+        // if (user === false) return res.status(400).json({ message: 'User not found', success: false })
+
+        const cart = await Cart.find({ buyer: user })
+        if (!cart) return res.status(400).json({ message: 'Cart is empty', success: false })
+
         return res.status(200).json({ message: cart, success: true })
 
     } catch (error) {
@@ -88,10 +102,10 @@ export const showCart = async (req, res) => {
 // remove product from cart
 export const remFromCart = async (req, res) => {
     try {
-        const {id} = req.params
+        const { id } = req.params
 
         const remProduct = await Cart.findByIdAndDelete(id)
-        if(!remProduct) return res.status(400).json({ message: 'Product not found', success: false })
+        if (!remProduct) return res.status(404).json({ message: 'Product not found', success: false })
 
         return res.status(200).json({ message: 'Product removed from cart', success: true })
     } catch (error) {

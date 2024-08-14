@@ -38,3 +38,7 @@ export const changeStock = async (id, stock) => {
         return false
     }
 }
+
+
+//delete product image from cloudinary
+//code here

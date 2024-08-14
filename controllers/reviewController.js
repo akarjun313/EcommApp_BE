@@ -1,4 +1,5 @@
 import { findUser } from "../logic/basic-logic/findUser.js"
+import Bookings from "../models/bookingModel.js"
 import Review from "../models/reviewModel.js"
 
 // FOR USERS 
@@ -6,19 +7,24 @@ import Review from "../models/reviewModel.js"
 // add review
 export const addReview = async (req, res) => {
     try {
-        // id of the product 
-        const {id} = req.params
+        // id of the booking
+        const { id } = req.params
 
-        const {rating, review} = req.body
+        const { rating, review } = req.body
 
-        //find user
-        const user = await findUser()
-        if(user === false) return res.status(400).json({ message: 'User not found', success: false })
+        //getting booking details
+        const bookingDetails = await Bookings.findById(id)
+        if(!bookingDetails) return res.status(400).json({ message: 'Booking not found', success: false })
+
 
         //check if user already added review
-        const findReview = await Review.find({ $and: [{ user: user._id }, { product: id }] })
+        const findReview = await Review.find({ $and: [{ user: bookingDetails.buyer }, { product: bookingDetails.product }] })
         if (findReview.length != 0) {
             return res.json({ message: "Already added review", success: false })
+        }
+
+        if(bookingDetails.status !== 'Delivered'){
+            return res.status(400).json({ message: 'Product must be baught first', success: false })
         }
 
         //add review
@@ -67,8 +73,13 @@ export const deleteReview = async (req, res) => {
         const {id} = req.params
 
         //find user
-        const user = await findUser()
-        if(user === false) return res.status(400).json({ message: 'User not found', success: false })
+        let user = ''
+        try {
+            user = await findUser(req)
+        } catch (error) {
+            console.log("Error in finding user", error)
+            res.status(404).json({ message: "Error in finding user", success: false })
+        }
 
         //find review
         const findReview = await Review.findById(id)

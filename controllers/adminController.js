@@ -26,7 +26,7 @@ export const adminSignin = async (req, res) => {
         }
 
         const token = adminToken(userExist)
-        await res.cookie("token", token)
+        await res.cookie("token", token, { httpOnly: true })
 
         res.json({ message: ["Logged-In"], success: true })
     } catch (error) {

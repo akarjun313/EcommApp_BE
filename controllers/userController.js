@@ -23,8 +23,14 @@ export const userSignup = async (req, res) => {
             return res.json({ message: "Phone number already registered", success: false })
         }
 
+        // checking role
+        if(role !== 'user' && role !== 'seller'){
+            return res.json({ message: "Invalid role", success: false })
+        }
+            
+
         // hashing password using bcrypt
-        const saltRounds = process.env.SALT_ROUNDS
+        const saltRounds = 10
         const hashPassword = await bcrypt.hash(password, saltRounds)
 
         // creating new user
@@ -74,12 +80,14 @@ export const userSignin = async (req, res) => {
         }
 
         // generating token
-        const userEmail = userExist.email.toHexString()
+        const userEmail = userExist.email
         const token = userToken(userExist)
-        await res.cookie("token", token)
-        await res.cookie("userEmail", userEmail)
+        await res.cookie("token", token, { httpOnly: true })
 
-        res.json({ message: ["Logged-In"], success: true })
+        // await res.cookie("userEmail", userEmail)
+        await res.cookie('userEmail', encodeURIComponent(userEmail), { httpOnly: true })
+
+        res.json({ message: ["Logged-In", userExist], success: true })
     } catch (error) {
         console.log("Error in user Sign-In", error)
         return res.send("Error in user Sign-In")

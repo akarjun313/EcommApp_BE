@@ -1,34 +1,63 @@
 import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
-    buyer : {
+    buyer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    product : {
-        type : mongoose.Schema.Types.ObjectId,
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Product'
     },
-    seller : {
+    seller: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    quantity : {
-        type : Number,
-        required : true,
+    quantity: {
+        type: Number,
+        required: true,
         min: 1,
         max: 10
     },
-    totalPrice : {
+    totalPrice: {
         type: Number,
         required: true,
         min: 100
     },
-    date : {
+    date: {
         type: Date,
         default: Date.now
+    },
+    status: {
+        type: String,
+        default: "Pending",
+        enum: [
+            "In-transit", "Delivered", "Cancelled", "Pending",
+        ]
+    },
+    address: {
+        //buyer address
+        city: {
+            type: String,
+            required: true
+        },
+        state: {
+            type: String,
+            required: true
+        },
+        pincode: {
+            type: Number,
+            required: true
+        },
+        landmark: {
+            type: String,
+            required: true
+        },
+        phone : {
+            type : Number,
+        }
     }
-},{ timestamps: true })
+}, { timestamps: true })
 
 const Bookings = mongoose.model('Bookings', bookingSchema)
 export default Bookings
