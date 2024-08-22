@@ -1,5 +1,6 @@
 import { findUser } from "../logic/basic-logic/findUser.js"
 import Bookings from "../models/bookingModel.js"
+import Product from "../models/productModel.js"
 import Review from "../models/reviewModel.js"
 
 // FOR USERS 
@@ -10,11 +11,11 @@ export const addReview = async (req, res) => {
         // id of the booking
         const { id } = req.params
 
-        const { rating, review } = req.body
+        const { rating, review } = req.body.data
 
         //getting booking details
         const bookingDetails = await Bookings.findById(id)
-        if(!bookingDetails) return res.status(400).json({ message: 'Booking not found', success: false })
+        if(!bookingDetails) return res.json({ message: 'Booking not found', success: false })
 
 
         //check if user already added review
@@ -22,22 +23,31 @@ export const addReview = async (req, res) => {
         if (findReview.length != 0) {
             return res.json({ message: "Already added review", success: false })
         }
+        console.log(findReview)
 
         if(bookingDetails.status !== 'Delivered'){
-            return res.status(400).json({ message: 'Product must be baught first', success: false })
+            return res.json({ message: 'Product must be delivered first', success: false })
         }
 
         //add review
         const newReview = new Review({
             rating,
             review,
-            user: user._id,
-            product: id
+            user: bookingDetails.buyer,
+            product: bookingDetails.product
         })
 
         //save review
         const saveReview = await newReview.save()
-        if(!saveReview) return res.status(400).json({ message: "Failed, error in adding review", success: false })
+        if(!saveReview) return res.json({ message: "Failed, error in adding review", success: false })
+
+
+        // Update product rating
+        const reviews = await Review.find({ product: bookingDetails.product })
+        const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0)
+        const averageRating = totalRating / reviews.length
+
+        await Product.findByIdAndUpdate(bookingDetails.product, { rating: averageRating })
 
         return res.status(200).json({ message: 'Review added successfully', success: true })
         
@@ -52,10 +62,11 @@ export const showReviews = async (req, res) => {
     try {
         //Product id
         const {id} = req.params
+        console.log("Product id :", id)
 
         //fetching reviews
         const showReviews = await Review.find({ product: id })
-        if(showReviews.length === 0) return res.status(400).json({ message: "No reviews found", success: false })
+        if(showReviews.length === 0) return res.json({ message: "No reviews found", success: false })
 
         return res.status(200).json({ message: showReviews, success: true })
 

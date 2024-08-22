@@ -35,6 +35,14 @@ const bookingSchema = new mongoose.Schema({
             "In-transit", "Delivered", "Cancelled", "Pending",
         ]
     },
+    paymentId: {
+        type: String,
+        required: true
+    },
+    orderId: {
+        type: String,
+        required: true
+    },
     address: {
         //buyer address
         city: {
@@ -55,6 +63,10 @@ const bookingSchema = new mongoose.Schema({
         },
         phone : {
             type : Number,
+        },
+        addressDetail: {
+            type: String,
+            required: true
         }
     }
 }, { timestamps: true })

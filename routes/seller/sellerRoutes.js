@@ -1,7 +1,9 @@
 import express, { Router } from 'express'
 import upload from '../../middlewares/multer/multerMiddleware.js'
-import { addProduct, editProduct, removeProduct } from '../../controllers/product/sellerPController.js'
+import { adCount, addProduct, editProduct, removeProduct, totalSalesAndProfit, viewMyProducts } from '../../controllers/product/sellerPController.js'
 import authenticateSeller from '../../middlewares/authentication/sellerAuth.js'
+import { checkSeller } from '../../controllers/userController.js'
+import { changeOrderStatus, viewAllOrders } from '../../controllers/bookingController.js'
 
 
 const sellerRouter = Router()
@@ -11,19 +13,26 @@ sellerRouter.get('/', (req, res) => {
     res.send("Seller Router")
 })
 
+sellerRouter.get('/authenticate-seller', authenticateSeller, checkSeller)   //for FE
 
 sellerRouter.post('/add-product', authenticateSeller, upload.array('images', 6), addProduct)    //add watches
 
 
 //view watch
 
-sellerRouter.patch('/edit-product/:id', editProduct)    //edit watch
+sellerRouter.patch('/edit-product/:id', authenticateSeller, editProduct)    //edit watch
 
-sellerRouter.delete('/remove-product/:id', removeProduct)   //delete watch
+sellerRouter.delete('/remove-product/:id', authenticateSeller, removeProduct)   //delete watch
 
-//view all watches
+sellerRouter.get('/my-products', authenticateSeller, viewMyProducts)    //view all watches
+
 
 //view pending orders
-//view all orders
+
+sellerRouter.get('/orders', authenticateSeller, viewAllOrders)   //view all orders
+sellerRouter.patch('/change-order-status/:id', authenticateSeller, changeOrderStatus) //change order status
+
+sellerRouter.get('/ad-count', authenticateSeller, adCount) //show active and inactive ad count
+sellerRouter.get('/sales-and-profit', authenticateSeller, totalSalesAndProfit)  //show total sales & profit
 
 export default sellerRouter

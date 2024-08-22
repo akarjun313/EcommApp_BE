@@ -1,7 +1,8 @@
 import express, { Router } from 'express'
-import { adminSignin } from '../../controllers/adminController.js'
-import { approveProduct } from '../../controllers/product/adminPController.js'
+import { adminSignin, checkAdmin, logoutAdmin } from '../../controllers/adminController.js'
+import { approveProduct, getAllProducts } from '../../controllers/product/adminPController.js'
 import authenticateAdmin from '../../middlewares/authentication/adminAuth.js'
+import { userList } from '../../controllers/userController.js'
 
 
 const adminRouter = Router()
@@ -11,16 +12,17 @@ adminRouter.get('/', (req, res) => {
     res.send("Admin Router")
 })
 
-// for sign-In
-adminRouter.post('/sign-in', adminSignin)
 
-// for sign-out
-adminRouter.post('/logout', )
+adminRouter.post('/sign-in', adminSignin)   // for sign-In
+adminRouter.post('/logout', logoutAdmin)   //admin logout
 
-//change product status
-adminRouter.patch('/change-status/:id', authenticateAdmin, approveProduct)
+adminRouter.get('/authenticate-admin', authenticateAdmin, checkAdmin)   //for FE authentification
 
-// view seller list 
-// view products list
+adminRouter.patch('/change-status/:id', approveProduct)  //change product status
+
+adminRouter.get('/get-all-products', getAllProducts)    //fetching all products and its seller details
+
+
+adminRouter.get('/dashboard-readings', userList)    // Admin gets all users, sellers & product count
 
 export default adminRouter

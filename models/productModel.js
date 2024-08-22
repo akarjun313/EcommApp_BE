@@ -59,6 +59,10 @@ const productSchema = new mongoose.Schema({
         type : Boolean,
         default : false,
         required : true
+    },
+    seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 }, { timestamps: true })
 
