@@ -3,14 +3,15 @@ import jwt from 'jsonwebtoken'
 
 dotenv.config()
 
-function authenticateAdmin(req, res, next){
-    const token = req.cookies.token
+async function authenticateAdmin(req, res, next){
+    const token = await req.cookies.token
 
     jwt.verify(token, process.env.SE, (err, user)=>{
         
 
         if(err){
             console.log(err)
+            res.clearCookie("token")
             return res.status(400).send(err)
         } 
 

@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 async function authenticateSeller(req, res, next){
-    const token = req.cookies.token
+    const token = await req.cookies.token
 
     jwt.verify(token, process.env.SE, (err, user)=>{
     

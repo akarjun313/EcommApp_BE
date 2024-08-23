@@ -84,11 +84,18 @@ export const userSignin = async (req, res) => {
         // generating token
         const userEmail = userExist.email
         const token = userToken(userExist)
-        await res.cookie("token", token)
+        await res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: 'None',
+            secure: true,
+        })
 
         // await res.cookie("userEmail", userEmail)
-        await res.cookie('userEmail', encodeURIComponent(userEmail), { httpOnly: true })
-
+        await res.cookie('userEmail', encodeURIComponent(userEmail), { 
+            httpOnly: true,
+            sameSite: 'None',
+            secure: true,
+        })
         res.json({ message: ["Logged-In", userExist], success: true })
     } catch (error) {
         console.log("Error in user Sign-In", error)
