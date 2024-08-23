@@ -134,6 +134,7 @@ export const checkUser = async (req, res) => {
     try {
 
         const user = req.user
+        console.log("checkUser function, User :", user)
 
         const findUser = await User.findOne({ _id: user.data })
         if (!findUser) {

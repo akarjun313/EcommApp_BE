@@ -18,8 +18,8 @@ userRouter.post('/signup', userSignup) //sign-up
 userRouter.post('/login', userSignin) //user sign-in
 userRouter.post('/logout', userLogout) //logout
 
-userRouter.get('/user-check', userCheck) //for navbar
-userRouter.get('/authenticate-user', checkUser) //for FE
+userRouter.get('/user-check', authenticateUser, userCheck) //for navbar
+userRouter.get('/authenticate-user', authenticateUser, checkUser) //for FE
 
 
 userRouter.get('/listing', showAllProducts) //show watches
@@ -35,13 +35,13 @@ userRouter.get('/cart', authenticateUser, showCart) //view cart
 userRouter.delete('/delete-cart/:id', authenticateUser, remFromCart) //delete from cart
 
 //buy
-userRouter.post('/booking', createOrder)    //razorpay payment creation
-userRouter.post('/verify-payment', verify)  //Razorpay verification & DB saving
+userRouter.post('/booking', authenticateUser, createOrder)    //razorpay payment creation
+userRouter.post('/verify-payment', authenticateUser, verify)  //Razorpay verification & DB saving
 
-userRouter.get('/my-orders', showOrders)    //view orders
+userRouter.get('/my-orders', authenticateUser, showOrders)    //view orders
 
 //REVIEWS SECTION
-userRouter.post('/add-review/:id', addReview)    //write review
+userRouter.post('/add-review/:id', authenticateUser, addReview)    //write review
 //delete review
 userRouter.get('/show-reviews/:id', showReviews) //view reviews
 

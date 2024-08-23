@@ -18,11 +18,11 @@ adminRouter.post('/logout', logoutAdmin)   //admin logout
 
 adminRouter.get('/authenticate-admin', authenticateAdmin, checkAdmin)   //for FE authentification
 
-adminRouter.patch('/change-status/:id', approveProduct)  //change product status
+adminRouter.patch('/change-status/:id', authenticateAdmin, approveProduct)  //change product status
 
-adminRouter.get('/get-all-products', getAllProducts)    //fetching all products and its seller details
+adminRouter.get('/get-all-products', authenticateAdmin, getAllProducts)    //fetching all products and its seller details
 
 
-adminRouter.get('/dashboard-readings', userList)    // Admin gets all users, sellers & product count
+adminRouter.get('/dashboard-readings', authenticateAdmin, userList)    // Admin gets all users, sellers & product count
 
 export default adminRouter
