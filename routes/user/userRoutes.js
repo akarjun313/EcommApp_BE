@@ -19,7 +19,7 @@ userRouter.post('/login', userSignin) //user sign-in
 userRouter.post('/logout', userLogout) //logout
 
 userRouter.get('/user-check', userCheck) //for navbar
-userRouter.get('/authenticate-user', authenticateUser,checkUser) //for FE
+userRouter.get('/authenticate-user', checkUser) //for FE
 
 
 userRouter.get('/listing', showAllProducts) //show watches
