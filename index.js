@@ -9,6 +9,9 @@ import cors from 'cors'
 const app = express()
 const port = 5213
 
+// db connection 
+connectDb()
+
 let corsOptions = {
     origin: ['http://localhost:5173', 'http://localhost:5174', ''],
     optionsSuccessStatus: 200,
@@ -29,8 +32,6 @@ app.get('/', (req, res)=>{
     res.send('welcome to My-Ecomm')
 })
 
-// db connection 
-connectDb()
 
 app.listen(port, ()=>{
     console.log(`app listening to port ${port}`)
