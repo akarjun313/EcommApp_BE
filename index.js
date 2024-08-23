@@ -10,13 +10,10 @@ const app = express()
 const port = 5213
 
 let corsOptions = {
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: ['http://localhost:5173', 'http://localhost:5174', ''],
     optionsSuccessStatus: 200,
     credentials : true
 }
-
-// db connection 
-connectDb()
 
 // middlewares
 app.use(cors(corsOptions))
@@ -32,6 +29,8 @@ app.get('/', (req, res)=>{
     res.send('welcome to My-Ecomm')
 })
 
+// db connection 
+connectDb()
 
 app.listen(port, ()=>{
     console.log(`app listening to port ${port}`)
