@@ -15,7 +15,7 @@ export const addProduct = async (req, res) => {
             console.log("no file uploaded")
             return res.json({ message: 'No file uploaded', success: false })
         }
-
+        
         // uploading image to cloudinary
         let imageUrl = []
         for (const file of req.files) {
