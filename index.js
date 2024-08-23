@@ -13,7 +13,7 @@ const port = 5213
 connectDb()
 
 let corsOptions = {
-    origin: ['https://ecomm-app-fe.vercel.app/'],
+    origin: ['https://ecomm-app-fe.vercel.app', '*'],
     optionsSuccessStatus: 200,
     credentials : true
 }
