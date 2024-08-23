@@ -9,24 +9,28 @@ export const adminSignin = async (req, res) => {
         const { email, password } = req.body
         const userExist = await User.findOne({ email })
 
-        if(!userExist){
+        if (!userExist) {
             console.log("user not found")
-            return res.json({ message : "user not found, please sign-up first", success : false })
+            return res.json({ message: "user not found, please sign-up first", success: false })
         }
 
-        if(userExist.role !== "admin"){
+        if (userExist.role !== "admin") {
             console.log("user is not admin")
             return res.json({ message: "user is not admin", success: false })
         }
 
         const matchPassword = await bcrypt.compare(password, userExist.hashPassword)
-        if(!matchPassword){
+        if (!matchPassword) {
             console.log("Incorrect password")
             return res.json({ message: "Incorrect password", success: false })
         }
 
         const token = adminToken(userExist)
-        await res.cookie("token", token)
+        await res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None'
+        })
 
         res.json({ message: ["Logged-In", userExist], success: true })
     } catch (error) {
