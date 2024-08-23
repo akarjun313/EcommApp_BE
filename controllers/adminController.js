@@ -27,7 +27,7 @@ export const adminSignin = async (req, res) => {
 
         const token = adminToken(userExist)
         await res.cookie("token", token, {
-            httpOnly: true,
+            httpOnly: false,
             secure: true,
             sameSite: 'None'
         })

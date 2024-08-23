@@ -85,14 +85,14 @@ export const userSignin = async (req, res) => {
         const userEmail = userExist.email
         const token = userToken(userExist)
         await res.cookie("token", token, {
-            httpOnly: true,
+            httpOnly: false,
             sameSite: 'None',
             secure: true,
         })
 
         // await res.cookie("userEmail", userEmail)
         await res.cookie('userEmail', encodeURIComponent(userEmail), { 
-            httpOnly: true,
+            httpOnly: false,
             sameSite: 'None',
             secure: true,
         })
