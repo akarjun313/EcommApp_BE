@@ -2,8 +2,10 @@ import { cloudinaryInstance } from "../../config/cloudinary/cloudinary.js"
 import { findUser } from "../../logic/basic-logic/findUser.js"
 import { changePrice, changeStock } from "../../logic/product-controller/productLogic.js"
 import Bookings from "../../models/bookingModel.js"
+import Cart from "../../models/cartModel.js"
 import Product from "../../models/productModel.js"
 import fs from 'fs'
+import Review from "../../models/reviewModel.js"
 
 
 //adding product for sale
@@ -15,7 +17,7 @@ export const addProduct = async (req, res) => {
             console.log("no file uploaded")
             return res.json({ message: 'No file uploaded', success: false })
         }
-        
+
         // uploading image to cloudinary
         let imageUrl = []
         for (const file of req.files) {
@@ -82,11 +84,11 @@ export const removeProduct = async (req, res) => {
 
         //find product
         const product = await Product.findById(id)
-        if (!product) return res.status(400).json({ message: 'Product not found', success: false })
+        if (!product) return res.json({ message: 'Product not found', success: false })
 
         //check if product is in-transit or pending
         const productInBooking = await Bookings.find({ $and: [{ product: id }, { status: ["In-transit", "Pending"] }] })
-        if (productInBooking.length > 0) return res.status(400).json({ message: "Product in-transit or pending", success: false })
+        if (productInBooking.length > 0 || productInBooking) return res.json({ message: "Product in-transit or pending", success: false })
 
         //getting image urls
         const imageUrls = product.image
@@ -97,9 +99,9 @@ export const removeProduct = async (req, res) => {
                 const publicId = imageUrl.split('/').slice(-2).join('/').split('.')[0]
                 const response = await cloudinaryInstance.uploader.destroy(publicId)
                 if (response.result === "not found") {
-                    return res.status(404).json({ message: "Image not found", success: false })
+                    return res.json({ message: "Image not found", success: false })
                 } else if (response.result !== 'ok') {
-                    return res.status(400).json({ message: "Failed to delete image", success: false })
+                    return res.json({ message: "Failed to delete image", success: false })
                 }
             } catch (error) {
                 console.log("error in deleting image from cloudinary", error)
@@ -108,12 +110,15 @@ export const removeProduct = async (req, res) => {
         }
 
         //delete product
-        const deleteProduct = await Product.deleteOne({ _id: id })
-        if (!deleteProduct) return res.status(400).json({ message: 'Failed to delete', success: false })
+        await Product.deleteOne({ _id: id })
+        
+
+        await Cart.deleteMany({ product: id })
+        
 
         //delete reviews
-        const deleteReviews = await Review.deleteMany({ product: id })
-        if (!deleteReviews) return res.status(400).json({ message: 'Failed to delete reviews', success: false })
+        await Review.deleteMany({ product: id })
+        
 
 
         return res.status(200).json({ message: 'Product deleted successfully', success: true })
