@@ -15,6 +15,8 @@ let corsOptions = {
     credentials : true
 }
 
+// db connection 
+connectDb()
 
 // middlewares
 app.use(cors(corsOptions))
@@ -24,12 +26,12 @@ app.use('/api/v1/admin', adminRouter)
 app.use('/api/v1/user', userRouter)
 app.use('/api/v1/seller', sellerRouter)
 
-// db connection 
-connectDb()
+
 
 app.get('/', (req, res)=>{
     res.send('welcome to My-Ecomm')
 })
+
 
 app.listen(port, ()=>{
     console.log(`app listening to port ${port}`)
