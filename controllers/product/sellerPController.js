@@ -88,7 +88,7 @@ export const removeProduct = async (req, res) => {
 
         //check if product is in-transit or pending
         const productInBooking = await Bookings.find({ $and: [{ product: id }, { status: ["In-transit", "Pending"] }] })
-        if (productInBooking.length > 0 || productInBooking) return res.json({ message: "Product in-transit or pending", success: false })
+        if (productInBooking.length > 0) return res.json({ message: "Product in-transit or pending", success: false })
 
         //getting image urls
         const imageUrls = product.image
