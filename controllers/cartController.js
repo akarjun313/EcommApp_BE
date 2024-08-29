@@ -120,3 +120,25 @@ export const remFromCart = async (req, res) => {
         res.status(500).json({ message: "Error in removing product from cart", success: false })
     }
 }
+
+
+export const getCountsFromCart = async (req, res) => {
+    try {
+        
+        let user = ''
+        try {
+            user = await findUser(req)
+        } catch (error) {
+            console.log("Error in finding user", error)
+            res.json({ message: "Error in finding user", success: false })
+        }
+
+        const countCart = await Cart.countDocuments({ buyer: user })
+        
+        console.log("Cart count :", countCart)
+        return res.status(200).json({ message: countCart, success: true })
+    } catch (error) {
+        console.log("Error in counting cart", error)
+        res.status(500).json({ message: "Error in counting cart", success: false })
+    }
+}

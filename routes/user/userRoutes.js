@@ -1,7 +1,7 @@
 import express, { Router } from 'express'
 import { checkUser, userCheck, userLogout, userSignin, userSignup } from '../../controllers/userController.js'
 import { showAllProducts, showProduct, showTopNew, showTopRated } from '../../controllers/product/userPController.js'
-import { addToCart, editCart, remFromCart, showCart } from '../../controllers/cartController.js'
+import { addToCart, editCart, getCountsFromCart, remFromCart, showCart } from '../../controllers/cartController.js'
 import authenticateUser from '../../middlewares/authentication/userAuth.js'
 import { addReview, showReviews } from '../../controllers/reviewController.js'
 import { createOrder, showOrders, verify } from '../../controllers/bookingController.js'
@@ -43,9 +43,11 @@ userRouter.get('/my-orders', authenticateUser, showOrders)    //view orders
 //REVIEWS SECTION
 userRouter.post('/add-review/:id', authenticateUser, addReview)    //write review
 //delete review
-userRouter.get('/show-reviews/:id', showReviews) //view reviews
+userRouter.get('/show-reviews/:id', showReviews)    //view reviews
 
-userRouter.get('/top-rated', showTopRated) //shows 4 top rated products
-userRouter.get('/new-products', showTopNew) // Shows 4 lately added products
+userRouter.get('/top-rated', showTopRated)      //shows 4 top rated products
+userRouter.get('/new-products', showTopNew)     // Shows 4 lately added products
+userRouter.get('/count-cart', getCountsFromCart)    //count cart for navbar
+
 
 export default userRouter
