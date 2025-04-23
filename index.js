@@ -5,9 +5,12 @@ import adminRouter from './routes/admin/adminRoutes.js'
 import userRouter from './routes/user/userRoutes.js'
 import sellerRouter from './routes/seller/sellerRoutes.js'
 import cors from 'cors'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const app = express()
-const port = 5213
+const port =  process.env.PORT || 5213
 
 // db connection 
 connectDb()
