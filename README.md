@@ -28,14 +28,14 @@ To see available endpoints:
 ## 🚀 Setup & Run  
 1. Clone the repo:  
    ```sh
-   git clone https://github.com/yourusername/wristwatch-backend.git
+   git clone https://github.com/akarjun313/EcommApp_BE.git
    
 2. Install dependencies & run:
    ```sh
     npm install
     npm run dev
 
-3. Server runs at: http://localhost:4000
+3. Server runs at: http://localhost:5213
 
 ## ⚙️ Environment Variables
   Create a .env file:
